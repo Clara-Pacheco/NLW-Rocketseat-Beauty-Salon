@@ -1,0 +1,781 @@
+/*========== RESET ==========*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+/*========== VARIABLES ==========*/
+:root {
+
+  --header-height: 4.5rem;
+  /* colors */
+  --hue: 159;
+  /* HSL color mode */
+  --base-color: hsl(var(--hue) 36% 57%);
+  --base-color-second: hsl(var(--hue) 65% 88%);
+  --base-color-alt: hsl(var(--hue) 57% 53%);
+  --title-color: hsl(var(--hue) 41% 10%);
+  --text-color: hsl(0 0% 46%);
+  --text-color-light: hsl(0 0% 98%);
+  --body-color: hsl(0 0% 98%);
+
+  /* Fonts */
+  --title-font-size: 1.875rem;
+  --subtitle-font-size: 1rem;
+
+  --title-font: 'Poppins', sans-serif;
+  --body-font: 'DM Sans', sans-serif;
+}
+
+/*========== LAYOUT ==========*/
+
+#header {
+  border-bottom: 1px solid #E4E4E4;
+  margin-bottom: 2rem;
+  display: flex;
+  /*Ao aplicar o display flex no header, o conteúdo da header passa a ser flexível 
+  e se adapta ao tamanho da tela.*/
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background-color: var(--body-color);
+}
+
+#header.scroll {
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, .1);
+}
+
+/*Classes sem espaço, são classes que são adiconadas com alguma ação no javascript*/
+
+.container {
+  width: 100%;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  /*O display: grid não mudará em nada o layout da página, mas habilitará novas 
+  funções no CSS.Uma dessas funcionalidades é GAP. O gap criará um espaço padrão entre 2 elementos filhos toda vez que for usado.*/
+  gap: 2rem;
+  /*No protótipo do figma, podemos visualizar um espaço de 36px entre 2 elementos filhos- imagem e texto na primeira sessão. 36px/16px(padrao browser)= 2rem*/
+}
+
+
+.section {
+  padding: calc(5rem + var(--header-height)) 0;
+}
+
+/*Na section, tudo o que tiver title lá dentro, daremos uma margin bottom de 1rem. Isso será global, acontecerá para todos os títulos de cada section.*/
+.section .title {
+  margin-bottom: 1rem;
+}
+
+.section .subtitle {
+  font-size: var(--subtitle-font-size);
+}
+
+/*Todo section que tiver o elemento header, terá uma margin-bottom de 4rem.*/
+.section header {
+  margin-bottom: 4rem;
+}
+
+.section header p strong {
+  color: var(--base-color);
+}
+
+.divider-1 {
+  height: 1px;
+  background: linear-gradient(270deg,
+      hsla(var(--hue), 36%, 57%, 1),
+      hsla(var(--hue), 65%, 88%, 0.34));
+}
+
+.divider-2 {
+  height: 1px;
+  background: linear-gradient(270deg,
+      hsla(var(--hue), 65%, 88%, 0.34),
+      hsla(var(--hue), 36%, 57%, 1))
+}
+
+/*========== NAVIGATION ==========*/
+nav {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+/*Um pouquinho antes do menu aparecer, com as propriedades top -20rem e transition .2s
+ele dá uma piscadinha, por isso colocamos os ul que estão com classe menu do nav com display*/
+nav .menu ul {
+  display: none;
+}
+
+nav .menu {
+  opacity: 0;
+  visibility: hidden;
+  top: -20rem;
+  transition: .3s;
+}
+
+
+nav.show .menu ul {
+  display: grid;
+}
+
+
+nav ul li a {
+  transition: color .2s;
+  /*Se não definirmos onde queremos aplicar a transição, ele aplicará essa transição para tudo..... TUDO O QUE? RESP: PARA TODAS AS PROPRIEDADES QUE EXISTEM TRANSIÇÃO, COMO 
+  WIDTH, HEIGHT, BACKGROUND, COLOR ETC...
+  Nesse caso, queremos aplicar para a propriedade color.*/
+  position: relative;
+}
+
+/*Quando passar o mouse em cima do a, a cor dele mudará para a cor especificada nas
+propriedades abaixo. Para que essa mudança seja fluída, colocamos uma propriedade de
+transição no elemento a logo acima, especificando onde será aplicada essa transição(color)[A PROPRIEDADE TRANSITION TAMBÉM PODE SER APLICADA NO WIDTH E HEIGHT POR EXEMPLO] e 
+quanto de tempo será a duração dessa transição.*/
+nav ul li a:hover {
+  color: var(--base-color);
+}
+
+/*PARA CRIAR A PROPRIEDADE DA BORDINHA QUE APARECE DE BAIXO DO ELEMENTO AO PASSAR O MOUSE POR CIMA DELE, USAMOS A PSEUDOCLASS HOVER E CRIAMOS UM PSEUDOELEMENTO: AO PASSAR O MOUSE
+EM CIMA DO ELEMENTO A, SERÁ CRIADA UMA BORDINHA LOGO ABAIXO DESSE ELEMENTO*/
+/*A bordinha será criada, mas de início, terá width de 0, ou seja, não estará aparecendo. Somente quando passarmos o mouse em cima, que ela aparecerá*/
+nav ul li a::after {
+  content: '';
+  width: 0%;
+  height: 2px;
+  background-color: var(--base-color);
+  position: absolute;
+  /*Terá posição absoluta em relação ao pai que tiver posição relativa, que definimos como sendo o elemento 'a'.*/
+  left: 0;
+  bottom: -1.5rem;
+  transition: width .3s;
+
+}
+
+/*Somente quando passarmos o mouse em cima, que o pseudoelemento criado(bordinha),
+passará a ter width 100% e aparecerá- SOMENTE AO CLIQUE DO MOUSE.
+MAS COMO FAZER PARA A BORDINHA IR CRESCENDO DEVAGARINHO?
+APLICA UMA TRANSITION NO MOMENTO DA CRIAÇÃO DO PSEUDOELEMENTO, DESSA VEZ NO WIDTH.-
+o width irá crescer (aparecer) num tempo de 0.3 segundos).*/
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+/*Mostrar menu*/
+
+nav ul li {
+  text-align: center;
+}
+
+/*OBSERVE QUE NÃO HÁ ESPAÇO ENTRE O NAV E A CLASSE SHOW. ISSO QUER DIZER AO BROWSER:
+QUANDO TIVER A CLASSE SHOW NO NAV, BUSCA O MENU E FAZ AS SEGUINTES ALTERAÇÕES NELE
+PROPRIEDADES CSS).*/
+nav.show .menu {
+  opacity: 1;
+  visibility: visible;
+  background-color: var(--body-color);
+  height: 100vh;
+  /*100% view port height
+  100% view port width-
+  significa que ocupará toda a altura e largura da tela do dispositivo.*/
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-content: center;
+
+}
+
+/*Quando o nav pegar a classe show, o ul(do nav) pegará a classe grid e aplicará um espaço de 4rem em seus elementos filhos.*/
+nav.show ul.grid {
+  gap: 4rem;
+}
+
+/*Quando o nav pegar a classe show, a clase menu do nav terá o display grid aplicado
+e isso habilitará várias possibilidades, como posicionar os elementos com espaçamento
+no centro do documento.*/
+
+.toggle {
+  color: var(--base-color);
+  font-size: 1.5rem;
+  /*Os ícones de SVG se transformaram em fonts após passarem pelo programa IcoMoon App*/
+  cursor: pointer;
+}
+
+
+/*Quando o nav não estiver pegando a classe show, não mostar o icone de fechamento do menu 'X'*/
+nav div.icon-close {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  right: 1.5rem;
+  top: -1.5rem;
+  transition: 0.2s;
+
+}
+
+/*Quando a classe nav estiver pegando a classe show, aí deixa visível o ícone de fechamento*/
+nav.show div.icon-close {
+  opacity: 1;
+  visibility: visible;
+  top: 1.5rem;
+}
+
+/*========== LOGO ==========*/
+.logo {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 1.31rem;
+  color: var(--title-color);
+}
+
+.logo span {
+  color: var(--base-color);
+}
+
+.logo-alt span {
+  color: var(--body-color);
+}
+
+/*OBSERVAMOS QUE A PÁGINA SEGUE UM PADRÃO DE ESPAÇAMENTO DE UMA SESSÃO PARA A OUTRA*/
+
+/*========== BASE ==========*/
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-color);
+  background-color: var(--body-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+.title {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: var(--title-font-size);
+  color: var(--title-color);
+  -webkit-font-smoothing: auto;
+}
+
+.button {
+  background-color: var(--base-color);
+  color: var(--text-color-light);
+  height: 3.5rem;
+  /*A tag "a" tem a propriedade display inline, ou seja, ela não permite receber
+  largura que extrapole o tamanho do conteúdo e adquire a altura do conteúdo. Somente display block ou display-inline block permites "setar" altura e largura.
+  O display block permite setar altura e altura. Se não for setado width e height, ele adquirá essas medidas do */
+  display: inline-flex;
+  align-items: center;
+  /*Ganha propriedades do inline e do flex-Permite alinhar o texto com a caixa do botão e permita setar altura e largura.*/
+  padding: 0 2rem;
+  border-radius: 0.25rem;
+  font-family: var(--body-font);
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.3s;
+  /*Para que essa mudança de cor seja mais suave, então aplicamos uma transição na cor do background.*/
+
+}
+
+/*Propriedade para quando colocamos o mouse por cima do elemento.*/
+.button:hover {
+  background-color: var(--base-color-alt);
+}
+
+/*========== HOME ==========*/
+#home {
+  overflow: hidden;
+  /*Faz com que a imagem não transborde os limites do home.*/
+}
+
+#home .container {
+  margin: 0;
+  /*Precisei 0 as margens para colar a foto na lateral, como no protótipo do figma. O problema é que, ao fazer isso, colou todo o conteúdo também.*/
+
+}
+
+#home .image {
+  position: relative;
+}
+
+/*Pelo CSS, conseguimos criar um elemento dentro da página HTML- a linha de código abaixo quer dizer: antes do elemento imagem, crie um conteúdo.*/
+#home .image::before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: var(--base-color-second);
+  position: absolute;
+  top: -16.8%;
+  left: 16.7%;
+  z-index: 0;
+}
+
+/*POSITION RELATIVE  é relativo a div que o elemento está contido. o elemento com position relative, será posicionado baseado na div/seção em que se encontra.
+POSITION ABSOLUTE é baseado na página toda. O elemento com position absolute será posicionado baseado na página inteira. */
+#home .image img {
+  position: relative;
+  /*Irá habilitar novas propriedades para o CSS-
+  TOP/RIGHT/BOTTOM/LEFT/Z-INDEX SÃO HABILITADAS POR CAUSA DO POSITION.*/
+  right: 2.93rem;
+  /*A imagem foi empurrada da direita para a esquerda em 47px, ou seja, 2.93rem*/
+}
+
+/*Para arrumar o problema acima, focamos somente na div contendo o texto e voltamos com as margens iniciais, mas dessa vez, somente para o texto e não para a imagem, que permanece grudada.*/
+
+#home .text {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  text-align: center;
+}
+
+#home .image img,
+#home .image::before {
+  border-radius: 0.25rem;
+}
+
+#home .text p {
+  margin-bottom: 2rem;
+}
+
+#home .text h1 {
+  margin-bottom: 1rem;
+}
+
+/*==========ABOUT==========*/
+#about {
+  background-color: white;
+}
+
+#about .container {
+  margin: 0;
+  /*Precisei 0 as margens para colar a foto na lateral, como no protótipo do figma. O problema é que, ao fazer isso, colou todo o conteúdo também.*/
+
+}
+
+#about .image {
+  position: relative;
+}
+
+/*Pelo CSS, conseguimos criar um elemento dentro da página HTML- a linha de código abaixo quer dizer: antes do elemento imagem, crie um conteúdo.*/
+#about .image::before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: var(--base-color-second);
+  position: absolute;
+  top: -8.3%;
+  left: -33%;
+  z-index: 0;
+}
+
+/*POSITION RELATIVE  é relativo a div que o elemento está contido. o elemento com position relative, será posicionado baseado na div/seção em que se encontra.
+POSITION ABSOLUTE é baseado na página toda. O elemento com position absolute será posicionado baseado na página inteira. */
+#about .image img {
+  position: relative;
+  /*Irá habilitar novas propriedades para o CSS-
+  TOP/RIGHT/BOTTOM/LEFT/Z-INDEX SÃO HABILITADAS POR CAUSA DO POSITION.*/
+}
+
+/*Para arrumar o problema acima, focamos somente na div contendo o texto e voltamos com as margens iniciais, mas dessa vez, somente para o texto e não para a imagem, que permanece grudada.*/
+
+#about .text {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+#about .image img,
+#about .image::before {
+  border-radius: 0.25rem;
+}
+
+/*========== SERVICES ==========*/
+#services .text {
+  margin-right: 1.5rem;
+  color: var(--title-color);
+  margin-bottom: 5rem;
+}
+
+.cards.grid {
+  gap: 1.5rem;
+
+}
+
+.card {
+  /*width: 327px;
+  height: 372px;*/
+  padding: 3.625rem 2rem;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+  border-bottom: 0.25rem solid var(--base-color);
+  border-radius: .25rem .25rem 0 0;
+  text-align: center;
+
+}
+
+.card i {
+  display: block;
+  margin-bottom: 1.5rem;
+  font-size: 5rem;
+  color: var(--base-color);
+}
+
+.card .title {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+
+/*========== TESTIMONIALS ==========*/
+
+#testimonials {
+  background-color: white;
+}
+
+#testimonials header {
+  margin-bottom: 0;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+#testimonials .container {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#testimonials blockquote {
+  /*width: 327px;
+  height: 302px;*/
+  padding: 2rem;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 0.25rem;
+}
+
+#testimonials blockquote p {
+  position: relative;
+  text-indent: 1.875rem;
+  margin-bottom: 1.5rem;
+  color: var(--title-color);
+}
+
+/*Onde existir a classe testimonials, procura o 'blockquote', procure o 'p' e procure o 'span'. É nesse último elemento que iremos aplicar as propriedades abaixo.*/
+#testimonials blockquote p span {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: serif;
+  /*Uma família de fontes que já existem nos computadores.*/
+  position: absolute;
+  top: -0.375rem;
+  left: -1.500rem;
+  color: var(--base-color);
+}
+
+/*Os elementos estão todos juntos em um mesmo contexto(plano).Quando criamos um position,
+um dos elementos sai desse plano e é movido para o plano de cima, fazendo com que os demais elementos subam e fiquem posicionados abaixo desse que foi movido ao plano de cima.*/
+/*No exemplo acima, colocamos position absolute para o elemento span, fazendo com que ele subisse para um novo contexto e o elemento 'p' ,que vem logo abaixo, ficasse posicionado abaixo dele. Se não especificarmos com relação a quem o 'span' estará com posição absoluta, ele estará com posição absoluta com relação a PÁGINA INTEIRA. Como queremos que fique com posição absoluta REM RELAÇÃO AO TEXTO (ELEMENTO P), ESPECIFICAMOS NO ELEMENTO PAI 'P' QUE ELE SERÁ A POSITION RELATIVE PARA O FILHO SPAN. Dessa forma, o elemento span que recebeu uma posição absoluta, passa a ser absoluto em relação ao pai 'p', que recebeu uma posição relativa.*/
+/*No que colocamos um text-indent para o elemento pai e fazemos com que ele se mova 1.875 para a direita, como o filho span está com posição absoluta EM RELAÇÃO AO PAI,ele vai junto. Para corrigir isso, alteramos as posições de left e top do elemento span.*/
+
+/*Na seção com id 'testimonials', procura o elemento 'cite'.*/
+#testimonials cite {
+  display: flex;
+  align-items: center;
+  /*O display flex no pai irá centralizar os elementos filhos- o texto de citação, imagem e nome da pessoa. */
+  font-style: normal;
+}
+
+/*Na seção com id 'testimonials', procura o elemento 'cite' e dentro do elemento 'cite',
+procura o elemento 'img'.*/
+#testimonials cite img {
+  width: 2rem;
+  height: 2rem;
+  object-fit: cover;
+  /*O QUE ISSO SIGNIFICA? Pega essa imagem que está dentro da tag img e faça com que ela se encaixe cobrindo todo o espaço da caixinha da tag image.*/
+  clip-path: circle();
+  /*O QUE SERIA CLIP PATH? CLIP PATH é uma propriedade que permite criar uma MÁSCARA na imagem. Por exemplo, se ela está quadradinha, podemos criar uma máscara e deixá-la circular*/
+  margin-right: .5rem;
+}
+
+/*==========SWIPER==========*/
+
+.swiper-slide {
+  height: auto;
+  padding: 4rem 1rem;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--base-color);
+}
+
+/*===============CONTACT===============*/
+#contact .grid {
+  gap: 4rem;
+}
+
+#contact .text p {
+  margin-bottom: 2rem;
+}
+
+#contact .button i,
+#contact ul li i {
+  font-size: 1.5rem;
+  margin-right: 0.625rem;
+}
+
+#contact ul.grid {
+  gap: 2rem;
+}
+
+#contact ul li {
+  display: flex;
+  align-items: center;
+}
+
+#contact ul li i {
+  color: var(--base-color);
+}
+
+/*===============FOOTER===============*/
+footer {
+  background-color: var(--base-color);
+}
+
+footer.section {
+  padding: 4rem 0;
+}
+
+footer .logo {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+/*A logo é uma classe de um elemento 'a', e todo elemento 'a', por padrão, é
+um elemento com display inline. Os elementos inline não permitem setar altura e largura e nem opção de margin-bottom. Mas se colocarmos display: inline-block, já podemos alterar essas configurações*/
+
+footer .brand p {
+  color: var(--text-color-light);
+  margin-bottom: 0.75rem;
+}
+
+footer i {
+  font-size: 1.5rem;
+  color: var(--text-color-light);
+}
+
+/*A classe grid destrava algumas funcionalidades no CSS como a propriedade GAP que proporciona um espaço entre os elementos.O grid tem como padrão pegar os elementos e jogar um abaixo do outro. Se queremos os elementos inline, podemos ajustar isso aplicando na classe que recebe o grid um "grid-auto-flow:column*/
+
+/*footer .social{
+  grid-auto-flow: column;
+
+}*/
+/*Forma mais fácil de dar espaçamento entre os links das redes sociais no footer. Aplicar uma margin-right para cada elemento 'a'.*/
+footer .social a {
+  margin-right: 2rem;
+  transition: .3s;
+  display: inline-block;
+}
+
+footer .social a:hover {
+  transform: translateY(-15px);
+}
+
+/*Colocamos uma pequena animação nos ícones de redes sociais. Quando passar o mouse por cima deles, eles darão um pulinho pra cima. Para isso, no 'a' precisamos ter um transtion com o tempo de duração(sem esse tempo de duração, a animação não acontece). Depois, ao passarmos o mouse no elemento 'a' das redes sociais (a:hover), através da propriedade transform, pedimos para ele subir um pouquinho, numa duração de tempo de .3s. (translateY faz com que o elemento suba ou desça um pouquinho para o eixo Y, no caso desse exemplo, 15px para cima(quando o elemento sobe, é um valor negativo, por isso -15).)*/
+
+/*Daria também para aplicar o display flex, deixando todos os elementos um do lado do outro(padrão no display flex)-apesar de que no exemplo do OriginSix, os elementos já estavam posicionados um ao lado do outro- Só que ao aplicar o display flex, ele também destrava novas possibilidades. Então poderíamos aplicar um gap nesses elementos que estão com display flex, o que geraria um espaço lateral entre eles.*/
+
+/*=============== BACK TO TOP ===============*/
+
+.back-to-top {
+  background-color: var(--base-color);
+  color: var(--text-color-light);
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  padding: .3rem;
+  clip-path: circle();
+  font-size: 1rem;
+  line-height: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: .3s;
+}
+
+/*A classe back to top é criada, mas permanece invisível. Ela so irá aparecer quando existir uma classe 'show' junto dela. Essa classe show será colocada ou retirada através de uma função no javascript.*/
+.back-to-top.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* RESPONSIVO*/
+
+/*@media é uma "at rule" do CSS. Tudo no CSS que for uma "AT RULE", irá receber uma regra.Existem outras at rules, como keyframes, que servem para fazer animações, por exemplo.At rules import, que serve para importar outros arquivos CSS (local ou externo). As at rules medias, dependendo da altura/largura/orientação do objeto, podemos fazer muita coisa no layout. As medias queries estão profundamente ligadas a essa linha no HTML: <meta name="viewport" content="width=device-width, initial-scale=1.0">. Sem a existência da mesma, provavelmente as queries não irão funcionar. 
+PRIMEIRO PASSO: ABRE E FECHA UM PAR DE PARÊNTESES;
+SEGUNDO PASSO: ABRE E FECHA UM PAR DE CHAVES.
+TERCEIRO PASSO: COLOCA A REGRA QUE VC QUER NO PAR DE PARÊNTESES- NESSE CASO, IREMOS COLOCAR A LARGURA MÍNIMA REQUERIDA.*/
+
+
+/*================== MEDIA QUERIES=====================*/
+/* extra largue devices: 1200 > */
+@media(min-width: 1200px){
+  .container {
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+    /*Colocamos as margens como auto para garantir que os elementos fiquem centralizados perfeitamente.*/
+  }
+ 
+  .section {
+    padding: 10rem 0 ;
+  }
+
+  .section header,
+  #testimonials header{
+    max-width: 32rem;
+    text-align: center;
+    margin-left: auto;
+    margin: auto;
+  }
+
+  .button {
+    height: 3.125rem;
+  }
+
+  nav .menu{
+    opacity: 1;
+    visibility: visible;
+    top: 0;
+  }
+
+  nav .menu ul{
+    display: flex;
+    gap: 2rem;
+
+  }
+
+  nav .menu ul li a.title {
+    font-weight: 400;
+    font-size: 1rem;
+    font-family: var(--body-font);
+  }
+
+  nav .icon-menu {
+    display: none;
+  }
+
+  main {
+    margin-top: var(--header-height);
+    /*Margem top do "main" mais o espaço definido entre o header e o main pelo designer no figma- de 32px, ou seja, 2rem.
+    calc() é uma função que fará um cálculo no CSS.*/
+  }
+  /*Para deixar um elemento ao lado do outro*/
+  
+  #home .container {
+    grid-auto-flow: column;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+
+  /*Isso faz com que o texto fique em primeiro, e a imagem em segundo.
+  Esse comando 'order' só é possível porque ele está dentro de uma caixa grid( os filhos do grid, image e text, recebem a propriedade order). A propriedade 'order' também funciona dentro de uma caixa flex.*/
+  #home .image {
+    order: 1;
+  }
+
+  #home .text {
+    order: 0;
+    max-width: 24rem;
+    text-align: left;
+  }
+
+  #about .container {
+    margin: 0 auto;
+    grid-auto-flow: column;
+  }
+
+  .cards {
+    /* 1 fr= 1 coluna flexível- fr= fraction.( fraction é algo flexível)*/
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .card {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  #testimonials .container {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  #contact .container {
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  #contact .text{
+    max-width: 25rem;
+
+  }
+
+  footer .section {
+    padding: 3.75rem 0;
+  }
+
+  footer .container {
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /*  -->GRID AUTO FLOW IRÁ FAZER COLUNAS- FAZ O NÚMERO DE COLUNAS DEPENDENDO DO NUMERO DE ELEMENTOS EXISTENTE. SE TEMOS 2 ELEMENTOS, ELE FARÁ 2 COLUNAS, SE TEMOS 3 ELEMENTOS, ELE FARÁ 3 COLUNAS E ASSIM POR DIANTE.
+      -->ALINHAMENTO AO CENTRO- ELE IRÁ ALINHAS OS ELEMENTOS NO EIXO 'x', DESLOCANDO-OS NO EIXO 'y'
+      --> JUSTIFY CONTENT: SPACE-BETWEEN: ELE IRÁ JUSTIFICAR OS ELEMENTOS, COLOCANDO UM ESPAÇO ENTRE ELES.*/
+    
+    footer .logo{
+      font-size: 2.25rem;
+    }
+}
+/* large devices: 1023 > */
+@media(min-width: 1023px){
+
+
+}
+/* large devices: 992 > */
+@media(min-width: 992px){
+:root{
+  --title-font-size: 2.25rem;
+  --subtitle-font-size: 1.125rem;
+}
+
+}
+/*Dá para usar com outras unidades de medidas, mas nos dispositivos, geralmente responsividade é feita com pixel.*/
+
+/* medium devices: 767 >  (medidas geralmente para tablets)*/
+@media(min-width: 767px){
+
+
+}
+/* Para mobile first, já é todo o código CSS construido nesse arquivo- só que mesmo nas categorias mobile, existem diversos tipos de mobile: iphone, galaxy, nokia etc... e alterações para cada um desses dispositivos precisam serem feitas, para que o trabalho se torne impecável.*/
+
+
+
